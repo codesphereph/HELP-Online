@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>HELP — LGU Jordan</title>
+<meta name="description" content="Hotline during Emergency Situation for Learners and Parents — a Digitalization Project of LGU Jordan, Guimaras.">
+<meta name="theme-color" content="#DC6514">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="HELP">
+<style>
+  :root{
+    --p:#DC6514;       /* HELP orange */
+    --p2:#F2A24C;
+    --p3:#A8480B;
+    --navy:#15356B;
+    --bg:#FFFFFF;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  #appFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--bg)}
+
+  /* ---------- splash ---------- */
+  #splash{
+    position:fixed;inset:0;z-index:10;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+    background:radial-gradient(circle at 50% 38%, #FFF6EC 0%, #FFFFFF 70%);
+    transition:opacity .5s ease, visibility .5s ease;
+  }
+  #splash.hide{opacity:0;visibility:hidden}
+
+  .logo-wrap{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center}
+  .logo-wrap img{width:128px;height:128px;border-radius:50%;object-fit:cover;
+    box-shadow:0 10px 30px rgba(220,101,20,.28);position:relative;z-index:2;background:#fff}
+
+  .ring{position:absolute;border-radius:50%;border:3px solid transparent}
+  .r1{width:200px;height:200px;border-top-color:var(--p);border-right-color:var(--p);
+    animation:spin 1.6s linear infinite;filter:drop-shadow(0 0 8px rgba(220,101,20,.55))}
+  .r2{width:160px;height:160px;border-bottom-color:var(--p2);border-left-color:var(--p2);
+    animation:spin 2.2s linear infinite reverse;filter:drop-shadow(0 0 6px rgba(242,162,76,.5))}
+  .r3{width:118px;height:118px;border-top-color:var(--navy);border-left-color:var(--navy);
+    animation:spin 1.1s linear infinite;filter:drop-shadow(0 0 4px rgba(21,53,107,.4))}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .brand{color:var(--navy);font-weight:800;font-size:30px;letter-spacing:1px;text-align:center}
+  .brand span{color:var(--p)}
+  .tagline{color:#8a7a68;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;margin-top:-12px;text-align:center;padding:0 24px}
+
+  .retry{margin-top:4px;display:none}
+  .retry a{color:var(--p);font-size:13px;text-decoration:underline;cursor:pointer}
+
+  /* ---------- install banner ---------- */
+  #install{
+    position:fixed;left:12px;right:12px;bottom:12px;z-index:20;
+    background:#fff;border:1px solid #F0DcC6;border-radius:18px;
+    box-shadow:0 12px 34px rgba(60,30,0,.18);
+    padding:12px 14px;display:none;align-items:center;gap:12px;
+    transform:translateY(160%);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+    padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  }
+  #install.show{display:flex;transform:translateY(0)}
+  #install img{width:46px;height:46px;border-radius:12px;flex-shrink:0}
+  #install .txt{flex:1;min-width:0}
+  #install .txt b{display:block;font-size:14px;color:#2A1C10;font-weight:800}
+  #install .txt small{display:block;font-size:12px;color:#6E5C4C;margin-top:1px;line-height:1.35}
+  #install .act{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+  #install button{border:0;border-radius:999px;font-weight:800;font-size:13px;padding:9px 16px;cursor:pointer}
+  #install .go{background:var(--p);color:#fff}
+  #install .no{background:transparent;color:#9b8a78;font-weight:700;font-size:12px;padding:4px}
+  #iosHint{font-size:12px;color:#6E5C4C;line-height:1.4}
+  #iosHint b{color:var(--p)}
+</style>
+</head>
+<body>
+  <iframe id="appFrame" title="HELP — LGU Jordan"
+    allow="camera; microphone; geolocation; clipboard-write; clipboard-read"></iframe>
+
+  <div id="splash">
+    <div class="logo-wrap">
+      <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+      <img src="icon.png" alt="HELP logo">
+    </div>
+    <div class="brand"><span>HELP</span> Online</div>
+    <div class="tagline">Padulong sa Bag-o nga Jordan</div>
+    <div class="retry" id="retry"><a id="retryLink">Taking too long? Tap to retry</a></div>
+  </div>
+
+  <!-- Install banner -->
+  <div id="install">
+    <img src="icon.png" alt="">
+    <div class="txt">
+      <b>Install HELP</b>
+      <small id="installMsg">Add HELP to your home screen for quick, full-screen access.</small>
+      <div id="iosHint" style="display:none">In Safari, tap <b>Share</b> &nbsp;then&nbsp; <b>Add to Home Screen</b>.</div>
+    </div>
+    <div class="act">
+      <button class="go" id="installGo" style="display:none">Install</button>
+      <button class="no" id="installNo">Not now</button>
+    </div>
+  </div>
+
+<script>
+  /* ====== Hardcoded HELP Apps Script web app URL ====== */
+  var APP_URL = 'https://script.google.com/macros/s/AKfycbxMq2lmr2RzVdlsQF81R1R5X4ZqsVvhMM2g3aXaz26RajBdtnr7jP7-e50_yGy23v7ISQ/exec';
+
+  var frame  = document.getElementById('appFrame');
+  var splash = document.getElementById('splash');
+  var retry  = document.getElementById('retry');
+  var hidden = false;
+
+  function hideSplash(){ if(hidden) return; hidden = true; splash.classList.add('hide'); }
+  frame.addEventListener('load', function(){ setTimeout(hideSplash, 350); });
+
+  setTimeout(function(){ if(!hidden) retry.style.display = 'block'; }, 15000);
+  document.getElementById('retryLink').addEventListener('click', function(){
+    retry.style.display = 'none';
+    frame.src = APP_URL + (APP_URL.indexOf('?') < 0 ? '?' : '&') + 'r=' + Date.now();
+  });
+
+  frame.src = APP_URL;
+
+  /* ====== Install banner ====== */
+  var installEl = document.getElementById('install');
+  var installGo = document.getElementById('installGo');
+  var installNo = document.getElementById('installNo');
+  var iosHint   = document.getElementById('iosHint');
+  var installMsg= document.getElementById('installMsg');
+  var deferred  = null;
+
+  function isStandalone(){
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+  function dismissedRecently(){
+    try {
+      var t = localStorage.getItem('help_install_dismissed');
+      return t && (Date.now() - (+t)) < 7*24*60*60*1000; // 7 days
+    } catch(e){ return false; }
+  }
+  function showBanner(){
+    if (isStandalone() || dismissedRecently()) return;
+    installEl.classList.add('show');
+  }
+  function hideBanner(){ installEl.classList.remove('show'); }
+
+  // Android / desktop Chromium
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferred = e;
+    installGo.style.display = 'block';
+    iosHint.style.display = 'none';
+    installMsg.style.display = 'block';
+    setTimeout(showBanner, 2500);
+  });
+
+  installGo.addEventListener('click', function(){
+    if(!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.then(function(){ deferred = null; hideBanner(); });
+  });
+
+  installNo.addEventListener('click', function(){
+    hideBanner();
+    try { localStorage.setItem('help_install_dismissed', String(Date.now())); } catch(e){}
+  });
+
+  window.addEventListener('appinstalled', function(){ hideBanner(); });
+
+  // iOS Safari has no beforeinstallprompt — show manual instructions
+  (function(){
+    var ua = window.navigator.userAgent.toLowerCase();
+    var isIOS = /iphone|ipad|ipod/.test(ua);
+    var isSafari = isIOS && !/crios|fxios|edgios/.test(ua);
+    if (isIOS && isSafari && !isStandalone()) {
+      installGo.style.display = 'none';
+      installMsg.style.display = 'none';
+      iosHint.style.display = 'block';
+      setTimeout(showBanner, 3000);
+    }
+  })();
+
+  /* ====== Service worker (GitHub Pages relative scope) ====== */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').catch(function(){});
+    });
+  }
+</script>
+</body>
+</html>
